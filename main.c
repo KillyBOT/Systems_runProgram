@@ -4,13 +4,14 @@
 #include <unistd.h>
 
 char** parseArgs(char* line){
-  char* newLine = line;
-  char** args = malloc(strlen(line) * sizeof(char));
+
+  char** args = malloc(sizeof(char) * 6);
   int p = 0;
-  do{
-    args[p] = strsep(&newLine, " ");
+
+  while (*line != '\0'){
+    args[p] = strsep(&line, " ");
     p++;
-  } while ( strlen(newLine)  != 0);
+  }
 
   args[p] = NULL;
   p++;
@@ -21,13 +22,17 @@ char** parseArgs(char* line){
 int main(int argc, char* argv[]){
 
   char** args;
-  char argsToCall[64] = "ls -l -a";
+  char argsToCall[256];
 
-  args = parseArgs(argsToCall);
-  for(int x = 0; x < 3; x++){
-    printf("%s\n", args[x]);
+  for(int x = 1; x < argc; x++){
+    strcat(argsToCall,argv[x]);
+    strcat(argsToCall," ");
   }
 
+  args = parseArgs(argsToCall);
+
   execvp(args[0],args);
+
+  free(args);
   return 0;
 }
